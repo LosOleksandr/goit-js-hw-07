@@ -24,32 +24,22 @@ const makeGallery = (gallery) => {
 
 galleryList.insertAdjacentHTML("beforeend", makeGallery(galleryItems));
 
-const galleryEls = document.querySelectorAll(".gallery__image");
+let instance;
 
-galleryEls.forEach((item) => {
-  item.addEventListener("click", (event) => {
-    event.preventDefault();
+const onClickImg = (evt) => {
+  evt.preventDefault();
 
-    //!
+  if (!evt.target.classList.contains("gallery__image")) return;
 
-    if (!event.target.classList.contains("gallery__image")) {
-      return;
-    }
+  instance = basicLightbox.create(`<img src="${evt.target.dataset.source}">`);
 
-    //!
+  instance.show();
+};
 
-    // if (event.target.nodeName !== "IMG") {
-    //   return;
-    // }
+galleryList.addEventListener("click", onClickImg);
 
-    const intance = basicLightbox.create(
-      `<img src="${event.target.dataset.source}">`
-    );
+const onEcsPress = (evt) => {
+  if (evt.code === "Escape") instance.close();
+};
 
-    intance.show();
-
-    document.addEventListener("keydown", (event) => {
-      if (event.code === "Escape") intance.close();
-    });
-  });
-});
+galleryList.addEventListener("keydown", onEcsPress);
